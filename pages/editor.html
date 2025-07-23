@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Editor Layout</title>
     <!-- Bootstrap CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Bootstrap Icons CDN for checkmark -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Prism.js CSS for syntax highlighting -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" id="prism-theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <!-- Prism.js Scripts (single inclusion) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
 
     <style>
         /* Custom CSS Variables for the new theme */
@@ -36,13 +45,12 @@
             font-family: "Inter", sans-serif;
             overflow: hidden; /* Prevent body scroll due to resizing */
         }
-        a{
-          text-decoration: none;
-          color:white
+        a {
+            text-decoration: none;
+            color: white;
         }
         .grid-container {
             display: grid;
-            /* Updated: Horizontal split with three columns */
             grid-template-rows: 1fr;
             grid-template-columns: 1fr 8px 2fr 8px 1fr; /* Columns for panels and grabbers */
             height: 100vh;
@@ -51,7 +59,7 @@
         }
 
         .panel {
-            overflow:scroll; /* Allow content to scroll within panels */
+            overflow: scroll; /* Allow content to scroll within panels */
             padding: 1rem;
             display: flex;
             flex-direction: column;
@@ -61,7 +69,6 @@
         }
 
         .grabber {
-            /* Updated: Vertical grabbers for horizontal resizing */
             width: 8px;
             height: 100%;
             cursor: ew-resize; /* East-west resize cursor */
@@ -72,7 +79,7 @@
         }
 
         .grabber:hover {
-            background-color: #a0aec0; /* Lighter gray on hover (can be adjusted) */
+            background-color: #a0aec0; /* Lighter gray on hover */
         }
 
         /* Specific text colors for headings */
@@ -80,16 +87,51 @@
         .text-code-heading { color: var(--cc-heading-code) !important; }
         .text-output-heading { color: var(--cc-heading-output) !important; }
 
-        /* Code editor and output area background */
-        #code-editor, #output-area {
-            background-color: var(--cc-code-area-bg) !important;
-            color: var(--cc-text-light) !important; /* Ensure text is light */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+        /* Code editor and output area styling */
+        #code-editor-textarea {
+            background-color: var(--cc-code-area-bg);
+            color: var(--cc-text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            resize: none;
+            width: 100%;
+            height: 200px;
+        }
+        #code-editor-display {
+            background-color: var(--cc-code-area-bg);
+            color: var(--cc-text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow: auto;
+        }
+        pre.line-numbers {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+        .line-numbers .line-numbers-rows {
+            border-right: 1px solid var(--border-color, #4a5568);
+            padding-right: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        select#language-select {
+            width: 150px;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--cc-panel-bg);
+            color: var(--cc-text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         /* Adjust Bootstrap button styles for the dark theme */
         .btn-custom-blue {
-            background-color: #007bff; /* A shade of blue similar to the image's button */
+            background-color: #007bff;
             border-color: #007bff;
             color: white;
             transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -101,7 +143,7 @@
         }
 
         .btn-custom-orange {
-            background-color: #fd7e14; /* A shade of orange */
+            background-color: #fd7e14;
             border-color: #fd7e14;
             color: white;
             transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -110,7 +152,6 @@
             background-color: #e66a00;
             border-color: #e66a00;
         }
-        
     </style>
 </head>
 <body class="bg-dark text-light">
@@ -134,7 +175,6 @@
     </header>
 
     <div id="grid-container" class="grid-container">
-      
         <!-- Left Panel: Challenge Description -->
         <div id="left-panel" class="panel m-2">
             <h2 class="h4 mb-3 text-challenge-heading">Challenge Description</h2>
@@ -147,7 +187,7 @@
                     <li><i class="bi bi-check-circle-fill text-success me-2"></i>The solution must be efficient (e.g., O(n) time complexity).</li>
                 </ul>
                 <h3 class="h5 mt-4 text-primary">Example:</h3>
-                <pre class="bg-dark p-3 rounded text-light-emphasis"><code>
+                <pre class="bg-dark p-3 rounded text-light-emphasis"><code class="language-javascript">
 function reverseString(str) {
   // Your code here
 }
@@ -165,13 +205,19 @@ function reverseString(str) {
         <!-- Center Panel: Code Editor -->
         <div id="center-panel" class="panel m-2 pb-5">
             <h2 class="h4 mb-3 text-code-heading">Code Editor</h2>
-            <pre id="code-editor" class="bg-dark p-3 rounded flex-grow-1 overflow-auto"><code class="language-javascript" contenteditable="true">
+            <select id="language-select">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+            </select>
+            <textarea id="editorCode" class="code-editor-textarea">
 function reverseString(str) {
-// Your code here
-return str.split('').reverse().join('');
+  // Your code here
+  return str.split('').reverse().join('');
 }
-            </code></pre>
-
+            </textarea>
+            <div id="code-editor-display"></div>
             <button class="btn btn-custom-blue mt-4 px-4 py-2 rounded shadow">
                 Run Code
             </button>
@@ -185,7 +231,7 @@ return str.split('').reverse().join('');
             <h2 class="h4 mb-3 text-output-heading">Output / Test Results</h2>
             <div id="output-area" class="flex-grow-1 p-3 rounded overflow-auto">
                 <p class="text-muted">Click "Run Code" to see output here.</p>
-                <pre class="mt-2 text-sm"><code>
+                <pre class="mt-2 text-sm"><code class="language-javascript">
 // Example Test Case:
 // Input: "hello"
 // Expected Output: "olleh"
@@ -204,7 +250,7 @@ return str.split('').reverse().join('');
     </div>
 
     <!-- Bootstrap JS CDN (optional, for components that need JS) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const gridContainer = document.getElementById('grid-container');
@@ -213,27 +259,25 @@ return str.split('').reverse().join('');
 
             // Function to handle resizing logic
             const handleResize = (e, grabber) => {
-                let startX = e.clientX || (e.touches && e.touches[0].clientX); // Changed to startX for horizontal resize
-                let initialGridTemplateColumns = gridContainer.style.gridTemplateColumns || '1fr 8px 2fr 8px 1fr'; // Changed to columns
+                let startX = e.clientX || (e.touches && e.touches[0].clientX);
+                let initialGridTemplateColumns = gridContainer.style.gridTemplateColumns || '1fr 8px 2fr 8px 1fr';
 
                 const onMouseMove = (moveEvent) => {
-                    const currentX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX); // Changed to currentX
-                    const deltaX = currentX - startX; // Changed to deltaX
+                    const currentX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
+                    const deltaX = currentX - startX;
 
-                    const columns = initialGridTemplateColumns.split(' ').map(s => s.trim()); // Changed to columns
-                    let col1Width, col2Width, col3Width; // Changed to col widths
+                    const columns = initialGridTemplateColumns.split(' ').map(s => s.trim());
+                    let col1Width, col2Width, col3Width;
 
                     if (grabber === grabber1) {
-                        // Resizing left and center panels
                         col1Width = parseFloat(columns[0].replace('fr', ''));
                         col2Width = parseFloat(columns[2].replace('fr', ''));
 
-                        const newCol1Width = Math.max(0.1, col1Width + (deltaX / window.innerWidth) * 4); // Adjust multiplier for sensitivity
+                        const newCol1Width = Math.max(0.1, col1Width + (deltaX / window.innerWidth) * 4);
                         const newCol2Width = Math.max(0.1, col2Width - (deltaX / window.innerWidth) * 4);
 
                         gridContainer.style.gridTemplateColumns = `${newCol1Width}fr 8px ${newCol2Width}fr 8px ${columns[4]}`;
                     } else if (grabber === grabber2) {
-                        // Resizing center and right panels
                         col2Width = parseFloat(columns[2].replace('fr', ''));
                         col3Width = parseFloat(columns[4].replace('fr', ''));
 
@@ -249,20 +293,18 @@ return str.split('').reverse().join('');
                     document.removeEventListener('mouseup', onMouseUp);
                     document.removeEventListener('touchmove', onMouseMove);
                     document.removeEventListener('touchend', onMouseUp);
-                    document.body.style.userSelect = ''; // Re-enable text selection
-                    document.body.style.cursor = ''; // Reset cursor
+                    document.body.style.userSelect = '';
+                    document.body.style.cursor = '';
                 };
 
-                // Add event listeners for mouse and touch
                 document.addEventListener('mousemove', onMouseMove);
                 document.addEventListener('mouseup', onMouseUp);
-                document.addEventListener('touchmove', onMouseMove, { passive: false }); // Use passive: false for touchmove
+                document.addEventListener('touchmove', onMouseMove, { passive: false });
                 document.addEventListener('touchend', onMouseUp);
-                document.body.style.userSelect = 'none'; // Disable text selection during resize
-                document.body.style.cursor = 'ew-resize'; // Change cursor during resize
+                document.body.style.userSelect = 'none';
+                document.body.style.cursor = 'ew-resize';
             };
 
-            // Mouse events for grabber 1
             grabber1.addEventListener('mousedown', (e) => {
                 handleResize(e, grabber1);
             });
@@ -270,7 +312,6 @@ return str.split('').reverse().join('');
                 handleResize(e, grabber1);
             });
 
-            // Mouse events for grabber 2
             grabber2.addEventListener('mousedown', (e) => {
                 handleResize(e, grabber2);
             });
@@ -282,10 +323,7 @@ return str.split('').reverse().join('');
 
     <!-- Router Script -->
     <script type="module" src="scripts/app.js"></script>
-    <!-- Prism.js -->
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-    <!-- Language support (e.g., JavaScript) -->
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
-
+    <!-- Updated Prism Integration Script -->
+    <script src="../scripts/prism-integration.js"></script>
 </body>
 </html>
