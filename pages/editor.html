@@ -49,13 +49,14 @@
             text-decoration: none;
             color: white;
         }
-        .grid-container {
+        .grid-container { /* Updated: Grid layout to adjust the alignment of the buttons */
             display: grid;
             grid-template-rows: 1fr;
             grid-template-columns: 1fr 8px 2fr 8px 1fr; /* Columns for panels and grabbers */
-            height: 100vh;
+            height: calc(100vh - 80px); /* Full height minus header */
             width: 100vw;
             overflow: hidden; /* Prevent content overflow during resize */
+            padding-top: 0.5rem; /* Add small top padding */
         }
 
         .panel {
@@ -162,8 +163,8 @@
                     <div style="font-size: 1.5rem; font-weight: 700; color: #4FC3F7;">CodeClip</div>
                     <nav style="display: flex; gap: 1.5rem;">
                         <a href="/" data-route="/" style="color: #f8f9fa; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: background 0.2s;">Home</a>
-                        <a href="./challenges.html" data-route="/challenges" style="color: #f8f9fa; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: background 0.2s;">Challenges</a>
-                        <a href="./editor.html" data-route="/editor" style="color: #4FC3F7; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; background: rgba(79, 195, 247, 0.1);">Editor</a>
+                        <a href="challenges.html" data-route="/challenges" style="color: #f8f9fa; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: background 0.2s;">Challenges</a>
+                        <a href="editor.html" data-route="/editor" style="color: #4FC3F7; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; background: rgba(79, 195, 247, 0.1);">Editor</a>
                         <a href="profile.html" data-route="/profile" style="color: #f8f9fa; text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; transition: background 0.2s;">Profile</a>
                     </nav>
                 </div>
@@ -176,7 +177,7 @@
 
     <div id="grid-container" class="grid-container">
         <!-- Left Panel: Challenge Description -->
-        <div id="left-panel" class="panel m-2">
+        <div id="left-panel" class="panel m-2">  <!-- Changed margins to fix allignment -->
             <h2 class="h4 mb-3 text-challenge-heading">Challenge Description</h2>
             <div class="text-secondary flex-grow-1">
                 <p>Welcome to the coding challenge! Your task is to implement a function that reverses a given string. Consider edge cases such as empty strings or strings with special characters.</p>
@@ -205,19 +206,13 @@ function reverseString(str) {
         <!-- Center Panel: Code Editor -->
         <div id="center-panel" class="panel m-2 pb-5">
             <h2 class="h4 mb-3 text-code-heading">Code Editor</h2>
-            <select id="language-select">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-            </select>
-            <textarea id="editorCode" class="code-editor-textarea">
+            <pre id="code-editor" class="bg-dark p-3 rounded flex-grow-1 overflow-auto"><code class="language-javascript" contenteditable="true">
 function reverseString(str) {
   // Your code here
   return str.split('').reverse().join('');
 }
-            </textarea>
-            <div id="code-editor-display"></div>
+            </code></pre>
+
             <button class="btn btn-custom-blue mt-4 px-4 py-2 rounded shadow">
                 Run Code
             </button>
@@ -227,9 +222,9 @@ function reverseString(str) {
         <div id="grabber-2" class="grabber"></div>
 
         <!-- Right Panel: Output/Test Results -->
-        <div id="right-panel" class="panel m-2 pb-5">
+        <div id="right-panel" class="panel m-2">
             <h2 class="h4 mb-3 text-output-heading">Output / Test Results</h2>
-            <div id="output-area" class="flex-grow-1 p-3 rounded overflow-auto">
+            <div id="output-area" class="flex-grow-1 p-3 rounded overflow-auto mb-2">
                 <p class="text-muted">Click "Run Code" to see output here.</p>
                 <pre class="mt-2 text-sm"><code class="language-javascript">
 // Example Test Case:
@@ -243,7 +238,7 @@ function reverseString(str) {
 // Actual Output: (will appear here)
                 </code></pre>
             </div>
-            <button class="btn btn-custom-orange mt-4 px-4 py-2 rounded shadow">
+            <button class="btn btn-custom-orange mt-2 px-4 py-2 rounded shadow">
                 Run Tests
             </button>
         </div>
